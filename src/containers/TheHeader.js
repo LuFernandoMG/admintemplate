@@ -51,16 +51,6 @@ const TheHeader = () => {
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">
-        <CHeaderNavItem className="px-3">
-          <CInputGroup>
-            <CInput type='text' id='search' name='search' placeholder='Buscar...' />
-            <CInputGroupAppend>
-              <CButton color='secondary' type='submit' size='sm'>
-                <CIcon name='cil-search' alt='buscar' />
-              </CButton>
-            </CInputGroupAppend>
-          </CInputGroup>
-        </CHeaderNavItem>
       </CHeaderNav>
 
       <CHeaderNav className="px-3">

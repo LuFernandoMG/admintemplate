@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     CBadge,
     CCard,
@@ -12,7 +12,10 @@ import {
     CTabContent,
     CTabPane,
     CDataTable,
-    CRow
+    CRow,
+    CButton,
+    CCollapse,
+    CInput
 } from '@coreui/react';
 import operationsData from './operationsData';
 
@@ -71,7 +74,9 @@ const fieldsIncome = [
     },
     {
         key: 'info',
-        label: 'Más información'
+        label: 'Más información',
+        sorter: false,
+        filter: false,
     }
 ]
 
@@ -97,22 +102,41 @@ const fieldsOutcome = [
         label: 'Fecha',
     },
     {
-        key: 'info',
-        label: 'Más información',
+        key: 'status',
+        label: 'Estado',
     },
     {
         key: 'balance',
         label: 'Saldo remanente'
     },
     {
-        key: 'status',
-        label: 'Estado',
+        key: 'info',
+        label: '',
+        _style: { width: '1%' },
+        sorter: false,
+        filter: false,
     },
 ]
 
 const Operations = () => {
     const dataIncome = operationsData.filter((item) => item.type === 'income')
     const dataOutcome = operationsData.filter((item) => item.type === 'outcome')
+
+    const [details, setDetails] = useState([]);
+
+
+    const toggleDetails = (idx) => {
+        const position = details.indexOf(idx)
+        let newDetails = details.slice()
+
+        if (position !== -1) {
+            newDetails.splice(position, 1)
+        } else {
+            newDetails = [...details, idx]
+        }
+
+        setDetails(newDetails)
+    }
 
     return (
         <>
@@ -121,7 +145,7 @@ const Operations = () => {
                 <CCard>
                     <CCardHeader>
                         <h2>Operaciones</h2>
-          </CCardHeader>
+                    </CCardHeader>
                     <CCardBody>
                         <CTabs activeTab="all">
                             <CNav variant="tabs">
@@ -154,6 +178,7 @@ const Operations = () => {
                                                         striped
                                                         bordered
                                                         sorter
+                                                        columnFilter
                                                         size="sm"
                                                         itemsPerPage={10}
                                                         pagination
@@ -183,6 +208,8 @@ const Operations = () => {
                                                         fields={fieldsIncome}
                                                         hover
                                                         striped
+                                                        columnFilter
+                                                        sorter
                                                         bordered
                                                         size="sm"
                                                         itemsPerPage={10}
@@ -213,6 +240,8 @@ const Operations = () => {
                                                         fields={fieldsOutcome}
                                                         hover
                                                         striped
+                                                        columnFilter
+                                                        sorter
                                                         bordered
                                                         size="sm"
                                                         itemsPerPage={10}
@@ -225,7 +254,57 @@ const Operations = () => {
                                                                             {item.status}
                                                                         </CBadge>
                                                                     </td>
-                                                                )
+                                                                ),
+                                                            'info':
+                                                                (item, idx) => {
+                                                                    return (
+                                                                        <td className='py-2'>
+                                                                            <CButton
+                                                                                color='primary'
+                                                                                variant='outline'
+                                                                                shape='square'
+                                                                                size='sm'
+                                                                                onClick={() => { toggleDetails(idx) }}
+                                                                            >
+                                                                                {details.includes(idx) ? 'Ocultar' : 'Mostrar'}
+                                                                            </CButton>
+                                                                        </td>
+                                                                    )
+                                                                },
+                                                            'details':
+                                                                (item, idx) => {
+                                                                    return (
+                                                                        <CCollapse show={details.includes(idx)}>
+                                                                            <CCardBody>
+                                                                                <h4>
+                                                                                    {item.id}
+                                                                                </h4>
+                                                                                <p className="text-muted">{item.ref ? `El número de referencia es ${item.ref}` : 'No ha establecido un número de referencia'}</p>
+                                                                                {!item.ref ? (
+                                                                                    <CRow>
+                                                                                        <CCol sm='12' md='6'>
+                                                                                            <CInput placeholder='Número de referencia' type='text' size='sm' className='mr-3' />
+                                                                                        </CCol>
+                                                                                        <CCol sm='12' md='6'>
+                                                                                            <CButton size='sm' color='info'>
+                                                                                                Confirmar pago
+                                                                                            </CButton>
+                                                                                            <CButton size='sm' color='danger' className='ml-1'>
+                                                                                                Cancelar pago
+                                                                                            </CButton>
+                                                                                        </CCol>
+                                                                                    </CRow>
+                                                                                ) : (
+                                                                                    <div>
+                                                                                        <p>El número de referencia es {item.ref}</p>
+                                                                                        <p>El pagado el {item.date}</p>
+                                                                                    </div>
+                                                                                )
+                                                                                }
+                                                                            </CCardBody>
+                                                                        </CCollapse>
+                                                                    )
+                                                                }
                                                         }}
                                                     />
                                                 </CCardBody>

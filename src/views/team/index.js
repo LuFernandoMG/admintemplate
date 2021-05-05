@@ -63,6 +63,8 @@ const Team = () => {
                                 items={teamData}
                                 fields={fields}
                                 hover
+                                columnFilter
+                                sorter
                                 striped
                                 bordered
                                 size="sm"

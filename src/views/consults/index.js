@@ -72,6 +72,8 @@ const Consults = () => {
                                 hover
                                 striped
                                 bordered
+                                columnFilter
+                                sorter
                                 size="sm"
                                 itemsPerPage={10}
                                 pagination
